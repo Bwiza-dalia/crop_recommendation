@@ -112,18 +112,18 @@ if st.button("Get Recommendations"):
         for i, (crop, score) in enumerate(recommendations, 1):
             st.write(f"{i}. {crop} (Suitability Score: {score:.2f}%)")
             
-        # # Display recommendation explanation
-        # st.subheader("Why these recommendations?")
-        # st.write("""
-        # The recommendations are based on:
-        # - Location altitude suitability
-        # - Local rainfall patterns
-        # - Temperature requirements
-        # - Humidity conditions
-        # - Growing season compatibility
-        # - Crop water needs
-        # - Soil conditions (moisture, potassium, phosphorus)
-        # - Irrigation requirements
-        # """)
+        # Display recommendation explanation
+        st.subheader("Why these recommendations?")
+        st.write("""
+        The recommendations are based on:
+        - Location altitude suitability
+        - Local rainfall patterns
+        - Temperature requirements
+        - Humidity conditions
+        - Growing season compatibility
+        - Crop water needs
+        - Soil conditions (moisture, potassium, phosphorus)
+        - Irrigation requirements
+        """)
     else:
         st.write("No recommendations found for the selected criteria.")
