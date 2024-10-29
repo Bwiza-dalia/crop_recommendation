@@ -92,38 +92,41 @@ def get_top_crop_recommendations(sector_name, district_name, start_date):
 st.set_page_config(page_title="Crop Recommendation System")
 st.title("Crop Recommendation System")
 
-# Get unique sector and district names
-sectors = sorted(crop_data['Sector'].unique())
+# Initialize session state for storing the selected district
+if 'selected_district' not in st.session_state:
+    st.session_state.selected_district = None
+
+# Get unique districts
 districts = sorted(crop_data['District'].unique())
 
-# Get user inputs
-district = st.selectbox("Select District", options=districts)
-sector = st.selectbox("Select Sector", options=sectors)
+# District selection
+selected_district = st.selectbox("Select District", options=districts)
+
+# Update session state if district changes
+if selected_district != st.session_state.selected_district:
+    st.session_state.selected_district = selected_district
+    # Reset sector selection when district changes
+    if 'selected_sector' in st.session_state:
+        del st.session_state.selected_sector
+
+# Get sectors for selected district
+sectors_in_district = sorted(crop_data[crop_data['District'] == selected_district]['Sector'].unique())
+
+# Sector selection
+sector = st.selectbox("Select Sector", options=sectors_in_district)
+
+# Date selection
 start_date = st.date_input("Select Start Date")
 
 # Add a button to get recommendations
 if st.button("Get Recommendations"):
     # Get the top recommendations
-    recommendations = get_top_crop_recommendations(sector, district, str(start_date))
+    recommendations = get_top_crop_recommendations(sector, selected_district, str(start_date))
     
     # Display the results
     st.subheader("Top 5 Recommended Crops:")
     if recommendations:
         for i, (crop, score) in enumerate(recommendations, 1):
             st.write(f"{i}. {crop} (Suitability Score: {score:.2f}%)")
-            
-        # Display recommendation explanation
-        st.subheader("Why these recommendations?")
-        st.write("""
-        The recommendations are based on:
-        - Location altitude suitability
-        - Local rainfall patterns
-        - Temperature requirements
-        - Humidity conditions
-        - Growing season compatibility
-        - Crop water needs
-        - Soil conditions (moisture, potassium, phosphorus)
-        - Irrigation requirements
-        """)
     else:
         st.write("No recommendations found for the selected criteria.")
